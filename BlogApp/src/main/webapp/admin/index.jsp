@@ -79,6 +79,19 @@ List<BlogPost> blogPosts = (List<BlogPost>) request.getAttribute("blogPosts");
 	</nav>
 
 	<main class="container mt-4">
+		<%
+		if (isLoggedIn) {
+		%>
+		<div class="bubble">
+			<div class="bubble-text">
+				<h1 class="text-bold d-inline-block text-primary-emphasis">
+					Welcome,
+					<%=user.getName()%></h1>
+			</div>
+		</div>
+		<%
+		}
+		%>
 		<div class="row g-5">
 			<div class="col-md-12">
 				<div class="card">

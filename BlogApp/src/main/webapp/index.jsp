@@ -1,3 +1,4 @@
+<%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="com.sunbase.model.User"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ page import="java.util.List"%>
@@ -56,6 +57,15 @@
 	opacity: 0;
 }
 
+.recent-post-title:hover {
+	color: #007bff;
+}
+
+.recent-text {
+	border-left: 3px solid red;
+	padding-left: 10px;
+}
+
 .blog-image-container {
 	position: relative;
 	overflow: hidden;
@@ -68,6 +78,16 @@
 .blog-image:hover {
 	transform: scale(1.1);
 }
+
+.bubble-text {
+	background: #139ee0;
+	color: #fff;
+	padding: 7px 15px;
+	border-radius: 3px;
+	margin-bottom: 20px;
+	width: 100%;
+}
+
 </style>
 <link rel="stylesheet" href="assets/css/blogapp.css">
 <link rel="icon" href="assets/Images/logo.png" type="image/png">
@@ -149,7 +169,7 @@
 		</div>
 
 		<div class="row mt-2">
-			<div class="col-md-12">
+			<div class="col-md-8">
 				<div class="container">
 					<div class="section-title">
 						<h2>
@@ -168,7 +188,7 @@
 							.format(Date.from(allblogPost.getCreatedDate().atZone(ZoneId.systemDefault()).toInstant()));
 							String adminName = adminNames.get(allblogPost.getId());
 						%>
-						<div class="col-md-6">
+						<div class="col-md-12">
 							<div class="card mb-3">
 								<div class="row g-0">
 									<div class="col-md-4 blog-image-container">
@@ -196,10 +216,10 @@
 												<%
 												String title = allblogPost.getTitle();
 												String[] word = title.split(" ");
-												for (int j = 0; j < Math.min(word.length, 6); j++) {
+												for (int j = 0; j < Math.min(word.length, 4); j++) {
 													out.print(word[j] + " ");
 												}
-												if (word.length > 6) {
+												if (word.length > 4) {
 													out.print("...");
 												}
 												%>
@@ -231,6 +251,54 @@
 							</div>
 						</div>
 
+						<%
+						}
+						%>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="position-sticky" style="top: 4rem;">
+					<%
+					if (isLoggedIn) {
+					%>
+					<div class="bubble">
+						<div class="bubble-text">
+							<h1 class="text-bold d-inline-block text-white">Welcome, <%=user.getName()%></h1>
+						</div>
+					</div>
+					<%
+					}
+					%>
+					<div>
+						<h4 class="fst-italic recent-text">Recent posts</h4>
+						<%
+						@SuppressWarnings("unchecked")
+						List<BlogPost> latestBlogs = (List<BlogPost>) request.getAttribute("latestBlogs");
+
+						DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a");
+
+						for (BlogPost recentPost : latestBlogs) {
+							String recentPostDate = recentPost.getCreatedDate().format(dateFormatter);
+						%>
+						<form action="ViewBlogs" method="post">
+							<input type="hidden" name="postId"
+								value="<%=recentPost.getId()%>">
+							<div
+								class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top"
+								onclick="this.parentNode.submit()" style="cursor: pointer;">
+								<div class="col-md-4 blog-image-container">
+									<img src="CoverImages/<%=recentPost.getCoverImage()%>"
+										class="bd-placeholder-img img-fluid rounded h-100 blog-image"
+										alt="Cover Image">
+								</div>
+								<div class="ms-3">
+									<h6 class="mb-0 recent-post-title"><%=recentPost.getTitle().length() > 35 ? recentPost.getTitle().substring(0, 35) + "..." : recentPost.getTitle()%></h6>
+									<small class="text-body-secondary"><%=recentPostDate%></small>
+								</div>
+							</div>
+						</form>
 						<%
 						}
 						%>
