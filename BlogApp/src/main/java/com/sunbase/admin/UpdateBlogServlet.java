@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -26,6 +27,8 @@ import com.sunbase.serviceImpl.BlogPostServiceImpl;
 public class UpdateBlogServlet extends HttpServlet {
 
 	private BlogPostService blogPostService;
+	private static final Pattern YOUTUBE_URL_PATTERN = Pattern
+			.compile("^(https?\\:\\/\\/)?(www\\.youtube\\.com|youtu\\.?be)\\/.+$");
 
 	public UpdateBlogServlet() {
 		blogPostService = new BlogPostServiceImpl();
@@ -47,6 +50,12 @@ public class UpdateBlogServlet extends HttpServlet {
 
 				Part coverImagePart = request.getPart("blogCover");
 				String youtubeLink = request.getParameter("blogVideoLink");
+
+				if (youtubeLink != null && !youtubeLink.isEmpty() && !isValidYouTubeLink(youtubeLink)) {
+					session.setAttribute("notification", "Invalid YouTube video link. Please provide a valid link.");
+					response.sendRedirect("AdminHome");
+					return;
+				}
 
 				int userId = user.getUserID();
 				BlogPost blogPost = new BlogPost();
@@ -130,5 +139,9 @@ public class UpdateBlogServlet extends HttpServlet {
 		Path filePath = dirPath.resolve(fileName);
 		filePart.write(filePath.toString());
 		return fileName;
+	}
+
+	private boolean isValidYouTubeLink(String url) {
+		return YOUTUBE_URL_PATTERN.matcher(url).matches();
 	}
 }

@@ -21,6 +21,13 @@
 html, body {
 	height: 100%;
 }
+
+#imagePreview {
+	display: none;
+	width: 100%;
+	max-width: 400px;
+	margin-top: 10px;
+}
 </style>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -114,8 +121,14 @@ html, body {
 							<div class="mb-3">
 								<label for="blogCover" class="form-label">Upload Cover</label> <input
 									type="file" class="form-control" id="blogCover"
-									name="blogCover">
+									accept="image/*" name="blogCover">
 								<div class="invalid-feedback">Please upload a cover.</div>
+								<div class="d-flex">
+									<img id="currentImage" height="100" width="300"
+										src="CoverImages/<%=blogPost.getCoverImage()%>"
+										alt="Current Cover Image" class="img-fluid mt-2 me-2" /> <img
+										id="imagePreview" class="img-fluid mt-2 ms-2" src="#" alt="Image Preview" />
+								</div>
 							</div>
 							<div class="mb-3">
 								<label for="blogVideoLink" class="form-label">YouTube
@@ -152,6 +165,20 @@ html, body {
 					form.classList.add('was-validated');
 				}, false);
 			});
+
+			// Image preview function
+			$("#blogCover").change(
+					function() {
+						const file = this.files[0];
+						if (file) {
+							const reader = new FileReader();
+							reader.onload = function(event) {
+								$("#imagePreview").attr("src",
+										event.target.result).show();
+							};
+							reader.readAsDataURL(file);
+						}
+					});
 		})();
 	</script>
 </body>

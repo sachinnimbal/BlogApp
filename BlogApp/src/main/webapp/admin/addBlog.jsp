@@ -1,7 +1,3 @@
-<%@page import="com.sunbase.model.User"%>
-<%@page import="java.time.format.DateTimeFormatter"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,6 +17,13 @@
 html, body {
 	height: 100%;
 }
+
+#imagePreview {
+	display: none;
+	width: 100%;
+	max-width: 400px;
+	margin-top: 10px;
+}
 </style>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -28,49 +31,12 @@ html, body {
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-	<%
-	User user = (User) session.getAttribute("user");
-	boolean isLoggedIn = user != null;
-	%>
-
-	<%
-	String notificationMessage = null;
-	if (request.getAttribute("notification") != null) {
-		notificationMessage = (String) request.getAttribute("notification");
-	} else if (session.getAttribute("notification") != null) {
-		notificationMessage = (String) session.getAttribute("notification");
-		session.removeAttribute("notification");
-	}
-
-	if (notificationMessage != null) {
-		String imageSrc = notificationMessage.contains("successfully")
-		? "assets/Images/check.png"
-		: "assets/Images/error.png";
-	%>
-	<figure class="notification">
-		<div class="body">
-			<img src="<%=imageSrc%>" title="Status" alt="Status" class="icon" />
-			<%=notificationMessage%>
-		</div>
-		<div class="progress"></div>
-	</figure>
-	<%
-	}
-	%>
-
 	<nav class="navbar navbar-dark bg-dark">
 		<div class="container-fluid justify-content-between">
 			<a class="navbar-brand" href="AdminHome"> <img
 				src="assets/Images/logo.png" alt="Logo" width="30" height="28"
 				class="d-inline-block align-text-top"> Blog App
-			</a>
-			<%
-			if (isLoggedIn) {
-			%>
-			<a class="btn btn-sm btn-primary text-white" href="Logout">Logout</a>
-			<%
-			}
-			%>
+			</a> <a class="btn btn-sm btn-primary text-white" href="Logout">Logout</a>
 		</div>
 	</nav>
 
@@ -107,8 +73,9 @@ html, body {
 							<div class="mb-3">
 								<label for="blogCover" class="form-label">Upload Cover</label> <input
 									type="file" class="form-control" id="blogCover"
-									name="blogCover" required>
+									accept="image/*" name="blogCover" required>
 								<div class="invalid-feedback">Please upload a cover.</div>
+								<img id="imagePreview" src="#" alt="Image Preview" />
 							</div>
 							<div class="mb-3">
 								<label for="blogVideoLink" class="form-label">YouTube
@@ -145,6 +112,20 @@ html, body {
 					form.classList.add('was-validated');
 				}, false);
 			});
+
+			// Image preview function
+			$("#blogCover").change(
+					function() {
+						const file = this.files[0];
+						if (file) {
+							const reader = new FileReader();
+							reader.onload = function(event) {
+								$("#imagePreview").attr("src",
+										event.target.result).show();
+							};
+							reader.readAsDataURL(file);
+						}
+					});
 		})();
 	</script>
 </body>
