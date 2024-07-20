@@ -54,3 +54,7 @@ private static final String PASSWORD = "your_mysql_password";
 ## Admin Login
 - **Username:** sachinnimbal9@gmail.com
 - **Password:** Skn1631$$
+
+## Project Screenshots
+
+![BlogAoo Demo](./BlogAppImages/blogapp.png "Desktop Demo")
