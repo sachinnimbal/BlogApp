@@ -50,7 +50,7 @@ export default function RestEndpoints() {
           </p>
 
           <Alert variant="success" title="Base URL">
-            All endpoints are prefixed with <code>/api/{'{'}{"}resource{'}'}</code> where{' '}
+            All endpoints are prefixed with <code>/api/{'{'}resource{'}'}</code> where{' '}
             <code>resource</code> is the name specified in <code>@CrudX</code> annotation.
           </Alert>
 
@@ -494,7 +494,7 @@ GET /api/employees/count
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <Badge variant="success">GET</Badge>
-              <code className="text-lg font-mono">/api/{'{'}resource{'}'}/exists/{'{'}{"}id{'}'}</code>
+              <code className="text-lg font-mono">/api/{'{'}resource{'}'}/exists/{'{'}id{'}'}</code>
             </div>
             <h3 className="text-xl font-semibold mb-3">Check Existence</h3>
             <p className="text-muted-foreground mb-4">
