@@ -1,0 +1,92 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/{resource}",
+    "description": "Create a single entity with validation",
+    "example": {
+      "curl": "curl -X POST http://localhost:8080/api/employees \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"department\": \"Engineering\",\n    \"salary\": 75000\n  }'",
+      "response": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"department\": \"Engineering\",\n    \"salary\": 75000,\n    \"createdAt\": \"2024-01-15T10:30:00Z\",\n    \"updatedAt\": \"2024-01-15T10:30:00Z\",\n    \"deleted\": false\n  }\n}"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/{resource}/batch",
+    "description": "Create up to 100,000 entities in a single request",
+    "example": {
+      "curl": "curl -X POST 'http://localhost:8080/api/employees/batch?skipDuplicates=true' \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"entities\": [\n      { \"name\": \"Alice\", \"email\": \"alice@example.com\", \"department\": \"Marketing\" },\n      { \"name\": \"Bob\", \"email\": \"bob@example.com\", \"department\": \"Sales\" }\n    ]\n  }'",
+      "response": "{\n  \"success\": true,\n  \"data\": {\n    \"totalProcessed\": 2,\n    \"successCount\": 2,\n    \"failureCount\": 0,\n    \"createdEntities\": [\n      { \"id\": 2, \"name\": \"Alice\", \"email\": \"alice@example.com\", ... },\n      { \"id\": 3, \"name\": \"Bob\", \"email\": \"bob@example.com\", ... }\n    ],\n    \"failures\": []\n  }\n}"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/{resource}",
+    "description": "Get all entities (auto-paginates if > 1000 records)",
+    "example": {
+      "curl": "curl -X GET http://localhost:8080/api/employees",
+      "response": "{\n  \"success\": true,\n  \"data\": [\n    { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", \"department\": \"Engineering\" },\n    { \"id\": 2, \"name\": \"Alice Smith\", \"email\": \"alice@example.com\", \"department\": \"Marketing\" }\n  ],\n  \"pagination\": {\n    \"totalRecords\": 2,\n    \"isAutoPaginated\": false\n  }\n}"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/{resource}/paged",
+    "description": "Get entities with custom pagination and sorting",
+    "example": {
+      "curl": "curl -X GET 'http://localhost:8080/api/employees/paged?page=0&size=20&sortBy=name&sortDirection=ASC'",
+      "response": "{\n  \"success\": true,\n  \"data\": [...],\n  \"pagination\": {\n    \"currentPage\": 0,\n    \"pageSize\": 20,\n    \"totalPages\": 5,\n    \"totalRecords\": 97,\n    \"hasNext\": true,\n    \"hasPrevious\": false\n  }\n}"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/{resource}/{id}",
+    "description": "Retrieve a specific entity by ID",
+    "example": {
+      "curl": "curl -X GET http://localhost:8080/api/employees/1",
+      "response": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"department\": \"Engineering\",\n    \"salary\": 75000,\n    \"createdAt\": \"2024-01-15T10:30:00Z\",\n    \"updatedAt\": \"2024-01-15T10:30:00Z\"\n  }\n}"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/{resource}/{id}",
+    "description": "Partial update with smart validation (immutable fields ignored)",
+    "example": {
+      "curl": "curl -X PATCH http://localhost:8080/api/employees/1 \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"department\": \"Management\",\n    \"salary\": 95000\n  }'",
+      "response": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"department\": \"Management\",\n    \"salary\": 75000,\n    \"updatedAt\": \"2024-01-15T14:20:00Z\"\n  }\n}"
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/{resource}/{id}",
+    "description": "Delete a single entity by ID",
+    "example": {
+      "curl": "curl -X DELETE http://localhost:8080/api/employees/1",
+      "response": "{\n  \"success\": true,\n  \"message\": \"Entity deleted successfully\"\n}"
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/{resource}/batch",
+    "description": "Delete multiple entities by IDs (max 1000 per request)",
+    "example": {
+      "curl": "curl -X DELETE http://localhost:8080/api/employees/batch \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"ids\": [1, 2, 3, 4, 5]\n  }'",
+      "response": "{\n  \"success\": true,\n  \"data\": {\n    \"totalProcessed\": 5,\n    \"successCount\": 5,\n    \"failureCount\": 0\n  }\n}"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/{resource}/count",
+    "description": "Get the total count of entities",
+    "example": {
+      "curl": "curl -X GET http://localhost:8080/api/employees/count",
+      "response": "{\n  \"success\": true,\n  \"data\": {\n    \"count\": 1247\n  }\n}"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/{resource}/exists/{id}",
+    "description": "Check if an entity exists with the given ID",
+    "example": {
+      "curl": "curl -X GET http://localhost:8080/api/employees/exists/1",
+      "response": "{\n  \"success\": true,\n  \"data\": {\n    \"exists\": true\n  }\n}"
+    }
+  }
+]
