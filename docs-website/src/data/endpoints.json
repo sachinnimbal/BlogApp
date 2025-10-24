@@ -1,0 +1,20 @@
+[
+  {
+    "method": "GET",
+    "path": "/v1/entities",
+    "description": "List entities",
+    "example": { "data": [{ "id": "ent_123", "name": "Acme" }] }
+  },
+  {
+    "method": "POST",
+    "path": "/v1/entities",
+    "description": "Create entity",
+    "example": { "id": "ent_456", "name": "NewCo" }
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/entities/ent_123",
+    "description": "Delete entity",
+    "example": { "deleted": true, "id": "ent_123" }
+  }
+]

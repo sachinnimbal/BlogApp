@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme base and smooth transitions */
+:root { color-scheme: light; }
+.dark { color-scheme: dark; }
+
+html, body, #root { height: 100%; }
+
+body { @apply antialiased bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100; }
+
+/* Focus ring for accessibility */
+.focus-ring { @apply outline-none ring-2 ring-offset-2 ring-brand/60 ring-offset-white dark:ring-offset-gray-950; }
+
+/* Gradient text utility */
+.gradient-text {
+  @apply bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent;
+}
+
+/* Prose adjustments for code blocks and tables */
+.prose pre { @apply overflow-x-auto rounded-lg bg-gray-900 text-gray-100; }
+.prose code { @apply text-pink-200; }
+.prose table { @apply w-full text-sm; }
+.prose th, .prose td { @apply border-b border-gray-200 dark:border-gray-800 py-2; }
+
+/* Header glass effect */
+.header-glass { @apply backdrop-blur-xl bg-white/60 dark:bg-gray-900/60; }
